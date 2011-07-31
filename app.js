@@ -5,10 +5,16 @@
 
 var express     = require('express');
 var RedisStore  = require('connect-redis')(express)
-var redisConf  = require("url").parse(process.env.REDISTOGO_URL)
+var redisConf   = require("url").parse(process.env.REDISTOGO_URL)
 var app         = module.exports = express.createServer();
+var pub         = __dirname + '/public';
 
 // Configuration
+
+app.set('redisHost', redisConf.hostname);
+app.set('redisPort', redisConf.port);
+app.set('redisDb', redisConf.auth.split(":")[0]);
+app.set('redisPass', redisConf.auth.split(":")[1]);
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -16,14 +22,15 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+  app.use(express.static(pub));
   app.use(express.cookieParser());
   app.use(express.session({
     secret: "21dae1be4774783b107b77cc30239e0d6a62ffb3573cb773ddf18398eba0622cc95db9f68f4d83216be3dddc5464b293ede9b62bfb4f8a388612caeab423c85e",
     store: new RedisStore({
-      port: redisConf.port,
-      host: redisConf.hostname,
-      pass: redisConf.auth.split(":")[1]
+      db:   app.set('redisDb'),
+      host: app.set('redisHost'),
+      pass: redisConf.auth.split(":")[1],
+      port: app.set('redisPort')
     }),
     cookie: {
       maxAge: 60000
@@ -32,18 +39,18 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler()); 
+  app.use(express.errorHandler());
 });
 
 // Routes
 
 app.get('/', function(req, res){
   res.render('index', {
-    title: 'Express'
+    title: 'Node.js Whack-a-Mole'
   });
 });
 
