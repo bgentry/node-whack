@@ -4,13 +4,15 @@
  */
 
 var express     = require('express');
-var RedisStore  = require('connect-redis')(express)
-var redisConf   = require("url").parse(process.env.REDISTOGO_URL)
+var RedisStore  = require('connect-redis')(express);
+var redisConf   = require("url").parse(process.env.REDISTOGO_URL);
 var app         = module.exports = express.createServer();
 var pub         = __dirname + '/public';
+require("coffee-script");
 
 // Configuration
 
+app.set('title', 'Node.js Whack-a-Mole');
 app.set('redisHost', redisConf.hostname);
 app.set('redisPort', redisConf.port);
 app.set('redisDb', redisConf.auth.split(":")[0]);
@@ -48,11 +50,7 @@ app.configure('production', function(){
 
 // Routes
 
-app.get('/', function(req, res){
-  res.render('index', {
-    title: 'Node.js Whack-a-Mole'
-  });
-});
+require('./app/routes.coffee')(app);
 
 var port = process.env.PORT || 3000
 app.listen(port, function(){
