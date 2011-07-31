@@ -21,7 +21,6 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
   app.use(express.static(pub));
   app.use(express.cookieParser());
   app.use(express.session({
@@ -33,9 +32,10 @@ app.configure(function(){
       port: app.set('redisPort')
     }),
     cookie: {
-      maxAge: 60000
+      maxAge: 1209600000
     }
   }));
+  app.use(app.router);
 });
 
 app.configure('development', function(){
