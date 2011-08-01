@@ -1,2 +1,15 @@
-h1= title
-p Welcome to #{title}
+!!! 5
+html
+  head
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js')
+    script(src='http://js.pusherapp.com/1.8/pusher.min.js')
+  body
+    h1= title
+    p Welcome to #{title}
+    h2 Users Online
+      span.user-count ()
+    ol.user-list
+
+    script(type='text/javascript')
+      var pusher = new Pusher('#{pusherAppKey}');
+    script(src='/javascripts/game.js')

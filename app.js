@@ -9,6 +9,7 @@ var redisConf   = require("url").parse(process.env.REDISTOGO_URL);
 var app         = module.exports = express.createServer();
 var pub         = __dirname + '/public';
 require("coffee-script");
+require("./app/pusher.coffee")(app);
 
 // Configuration
 
