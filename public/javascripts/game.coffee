@@ -7,20 +7,25 @@ gameChannel.bind('new_game_warning', (data) ->
   alert(data)
 )
 presenceChannel = pusher.subscribe('presence-game')
+membersOnlineCount = 0
 
 presenceChannel.bind 'pusher:subscription_succeeded', (members) ->
   console.log('subscription succeeded')
-  $('.user-count').html("(#{members.count})")
+  membersOnlineCount = members.count
+  $('.user-count').html("(#{membersOnlineCount})")
 
   members.each (member) ->
     add_member(member.id, member.info)
 
 presenceChannel.bind('pusher:member_added', (member) ->
-  console.log('member added')
+  membersOnlineCount++
+  update_member_count()
   add_member(member.id, member.info)
 )
 
 presenceChannel.bind('pusher:member_removed', (member) ->
+  membersOnlineCount-- unless membersOnlineCount == 0
+  update_member_count()
   remove_member(member.id, member.info)
 )
 
@@ -31,3 +36,7 @@ add_member = (id, info) ->
 remove_member = (id, info) ->
   $(".user[data-id='#{id}']").fadeOut () ->
     $(this).remove()
+
+update_member_count = () ->
+  $('.user-count').fadeIn () ->
+    $(this).html("(#{membersOnlineCount})")

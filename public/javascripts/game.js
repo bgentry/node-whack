@@ -1,5 +1,5 @@
 (function() {
-  var add_member, gameChannel, presenceChannel, remove_member;
+  var add_member, gameChannel, membersOnlineCount, presenceChannel, remove_member, update_member_count;
   Pusher.log = function(message) {
     if (window.console && window.console.log) {
       return window.console.log(message);
@@ -10,18 +10,25 @@
     return alert(data);
   });
   presenceChannel = pusher.subscribe('presence-game');
+  membersOnlineCount = 0;
   presenceChannel.bind('pusher:subscription_succeeded', function(members) {
     console.log('subscription succeeded');
-    $('.user-count').html("(" + members.count + ")");
+    membersOnlineCount = members.count;
+    $('.user-count').html("(" + membersOnlineCount + ")");
     return members.each(function(member) {
       return add_member(member.id, member.info);
     });
   });
   presenceChannel.bind('pusher:member_added', function(member) {
-    console.log('member added');
+    membersOnlineCount++;
+    update_member_count();
     return add_member(member.id, member.info);
   });
   presenceChannel.bind('pusher:member_removed', function(member) {
+    if (membersOnlineCount !== 0) {
+      membersOnlineCount--;
+    }
+    update_member_count();
     return remove_member(member.id, member.info);
   });
   add_member = function(id, info) {
@@ -32,6 +39,11 @@
   remove_member = function(id, info) {
     return $(".user[data-id='" + id + "']").fadeOut(function() {
       return $(this).remove();
+    });
+  };
+  update_member_count = function() {
+    return $('.user-count').fadeIn(function() {
+      return $(this).html("(" + membersOnlineCount + ")");
     });
   };
 }).call(this);
