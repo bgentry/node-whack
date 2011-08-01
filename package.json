@@ -7,7 +7,7 @@
     , "connect-redis": ">= 1.0.0"
     , "express": "2.4.3"
     , "jade": ">= 0.0.1"
-    , "pusher": ">= 0.0.2"
     , "sass": ">= 0.5.0"
+    , "websocket-client": ">= 1.0.0"
   }
 }

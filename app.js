@@ -3,13 +3,13 @@
  * Module dependencies.
  */
 
-var express     = require('express');
-var RedisStore  = require('connect-redis')(express);
-var redisConf   = require("url").parse(process.env.REDISTOGO_URL);
-var app         = module.exports = express.createServer();
-var pub         = __dirname + '/public';
 require("coffee-script");
-require("./app/pusher.coffee")(app);
+var express     = require('express'),
+    RedisStore  = require('connect-redis')(express),
+    redisConf   = require("url").parse(process.env.REDISTOGO_URL),
+    app         = module.exports = express.createServer(),
+    pub         = __dirname + '/public',
+    PusherConf  = require("./config").Pusher
 
 // Configuration
 
@@ -18,6 +18,9 @@ app.set('redisHost', redisConf.hostname);
 app.set('redisPort', redisConf.port);
 app.set('redisDb', redisConf.auth.split(":")[0]);
 app.set('redisPass', redisConf.auth.split(":")[1]);
+
+app.set('pusherAppKey', PusherConf.key);
+app.set('pusherSecret', PusherConf.secret);
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -50,8 +53,11 @@ app.configure('production', function(){
 });
 
 // Routes
-
 require('./app/routes.coffee')(app);
+
+// Pusher
+var pusher        = require('./pusher');
+var game_channel  = pusher.subscribe('private-game');
 
 var port = process.env.PORT || 3000
 app.listen(port, function(){
