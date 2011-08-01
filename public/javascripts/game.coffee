@@ -2,7 +2,7 @@
 Pusher.log = (message) ->
   window.console.log(message) if (window.console && window.console.log)
 
-gameChannel = pusher.subscribe('private-game-events')
+gameChannel = pusher.subscribe('private-game')
 gameChannel.bind 'new_game_warning', (data) ->
   alert(data)
 
@@ -38,3 +38,17 @@ remove_member = (id, info) ->
 update_member_count = () ->
   $('.user-count').fadeIn () ->
     $(this).html("(#{membersOnlineCount})")
+
+# Game events
+gameChannel.bind 'new-game-starting', (data) ->
+  $("#start_game_button").hide()
+  $(".message_area").html("A new game is starting soon. Get ready!")
+
+gameChannel.bind 'client-new-game-requested', (data) ->
+  # Hiding on the client event gets a faster response than waiting for the
+  # server to notify us of an impending game
+  $("#start_game_button").hide()
+
+$("#start_game_button").live 'click', () ->
+  $(this).hide()
+  gameChannel.trigger("client-new-game-requested", { user_id: currentUserId })

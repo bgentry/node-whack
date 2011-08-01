@@ -5,7 +5,7 @@
       return window.console.log(message);
     }
   };
-  gameChannel = pusher.subscribe('private-game-events');
+  gameChannel = pusher.subscribe('private-game');
   gameChannel.bind('new_game_warning', function(data) {
     return alert(data);
   });
@@ -46,4 +46,17 @@
       return $(this).html("(" + membersOnlineCount + ")");
     });
   };
+  gameChannel.bind('new-game-starting', function(data) {
+    $("#start_game_button").hide();
+    return $(".message_area").html("A new game is starting soon. Get ready!");
+  });
+  gameChannel.bind('client-new-game-requested', function(data) {
+    return $("#start_game_button").hide();
+  });
+  $("#start_game_button").live('click', function() {
+    $(this).hide();
+    return gameChannel.trigger("client-new-game-requested", {
+      user_id: currentUserId
+    });
+  });
 }).call(this);

@@ -1,12 +1,13 @@
 module.exports = (app) ->
   crypto = require('crypto')
-  pusher = require('../pusher')
+  pusherClient = require('../pusher').Client
 
   app.get '/', (req, res) ->
     if req.session.email
       console.log "Email: #{req.session.email}"
       res.render 'index', {
         title: app.set('title'),
+        currentUserId: req.session.email,
         pusherAppKey: app.set('pusherAppKey')
       }
     else
@@ -23,10 +24,10 @@ module.exports = (app) ->
 
   app.post '/pusher/auth', (req, res) ->
     res.redirect '/join' unless req.session.email
-    if req.body.channel_name == 'presence-game' || req.body.channel_name == 'private-game-events'
+    if req.body.channel_name == 'presence-game' || req.body.channel_name == 'private-game'
       req.setEncoding('utf8')
 
-      body = JSON.stringify(pusher.createAuthToken(
+      body = JSON.stringify(pusherClient.createAuthToken(
         req.body.channel_name,
         req.body.socket_id,
         {
