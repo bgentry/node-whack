@@ -33,7 +33,7 @@
   });
   add_member = function(id, info) {
     return $('.user-list').fadeIn(function() {
-      return $(this).append("<ul class='user' data-email='" + info.email + "' data-id='" + id + "'>" + info.email + "</ul>");
+      return $(this).append("<ul class='user' data-email='" + info.email + "' data-id='" + id + "'><span class='score'>" + info.score + "</span><span class='email'>" + info.email + "</span></ul>");
     });
   };
   remove_member = function(id, info) {
@@ -78,6 +78,7 @@
   gameChannel.bind('game-over', function(data) {
     clearMoleAndBinding();
     $(".message_area").html("Game over! The winner was " + data.user_id);
+    $(".user[data-email=" + data.user_id + "] .score").html(data.score);
     return $("#start_game_button").show();
   });
   clearMoleAndBinding = function() {

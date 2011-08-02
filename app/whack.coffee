@@ -16,10 +16,12 @@ gameChannel.bind 'client-new-game-requested', (data) ->
 gameChannel.bind 'client-whack', (data) ->
   if data.game_token?
     redisClient.get 'current_game_token', (err, reply) ->
-      data.game_token == reply
-      redisClient.del('current_game_token')
-      console.log "Winner! #{data.user_id}"
-      gameChannelApi.trigger 'game-over', {user_id: data.user_id}
+      if data.game_token == reply
+        acquireLock 'whack-lock', () ->
+          redisClient.del('current_game_token')
+          console.log "Winner! #{data.user_id}"
+          redisClient.hincrby 'scoreboard', data.user_id, 1, (err, reply) ->
+            gameChannelApi.trigger 'game-over', {user_id: data.user_id, score: reply}
 
 startGame = () ->
   console.log "Starting Game"
@@ -29,3 +31,22 @@ startGame = () ->
 
 randomStartDelay = (minimum, spread) ->
   Math.random()*spread + minimum
+
+getUserScore = (user_email, callback) ->
+  redisClient.hget 'scoreboard', user_email, (err, reply) ->
+    callback(reply || 0)
+exports.getUserScore = getUserScore
+
+acquireLock = (lock_key, callback, timeout = 500) ->
+  now = Date.now()
+  expireAt = now + timeout
+  redisClient.setnx lock_key, expireAt, (err, setNxReply) ->
+    if setNxReply == 1
+      callback()
+    else
+      redisClient.get lock_key, (err, currentTimeout) ->
+        if currentTimeout < now
+          redisClient.getset lock_key, expireAt, (err, newTimeout) ->
+            if newTimeout == expireAt
+              callback()
+              redisClient.del lock_key

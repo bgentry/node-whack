@@ -60,7 +60,7 @@ app.configure () ->
       port: exports.REDIS_PORT
     }),
     cookie: {
-      maxAge: 1209600000
+      maxAge: 600600000
     }
   }))
   app.use(app.router)

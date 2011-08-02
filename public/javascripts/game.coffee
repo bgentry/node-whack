@@ -29,7 +29,7 @@ presenceChannel.bind 'pusher:member_removed', (member) ->
 
 add_member = (id, info) ->
   $('.user-list').fadeIn () ->
-    $(this).append("<ul class='user' data-email='#{info.email}' data-id='#{id}'>#{info.email}</ul>")
+    $(this).append("<ul class='user' data-email='#{info.email}' data-id='#{id}'><span class='score'>#{info.score}</span><span class='email'>#{info.email}</span></ul>")
 
 remove_member = (id, info) ->
   $(".user[data-id='#{id}']").fadeOut () ->
@@ -71,6 +71,7 @@ gameChannel.bind 'client-whack', (data) ->
 gameChannel.bind 'game-over', (data) ->
   clearMoleAndBinding()
   $(".message_area").html("Game over! The winner was #{data.user_id}")
+  $(".user[data-email=#{data.user_id}] .score").html(data.score)
   $("#start_game_button").show()
 
 clearMoleAndBinding = () ->

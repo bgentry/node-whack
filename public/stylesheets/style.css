@@ -4,3 +4,8 @@ body {
 
 a {
   color: #00b7ff; }
+
+.user {
+  margin: 10px 0; }
+  .user .score {
+    margin-right: 10px; }
