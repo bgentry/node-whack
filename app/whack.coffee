@@ -41,12 +41,18 @@ acquireLock = (lock_key, callback, timeout = 500) ->
   now = Date.now()
   expireAt = now + timeout
   redisClient.setnx lock_key, expireAt, (err, setNxReply) ->
+    console.log "setNxReply:"
+    console.log setNxReply
     if setNxReply == 1
       callback()
     else
       redisClient.get lock_key, (err, currentTimeout) ->
+        console.log "< now? #{currentTimeout < now}"
+        console.log "c #{currentTimeout}"
+        console.log "n #{now}"
         if currentTimeout < now
           redisClient.getset lock_key, expireAt, (err, newTimeout) ->
+            console.log "== #{newTimeout == expireAt}"
             if newTimeout == expireAt
               callback()
               redisClient.del lock_key
