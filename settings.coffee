@@ -38,6 +38,7 @@ exports.REDIS_PASS = redisConf.auth.split(":")[1]
 redis       = require('redis')
 redisClient = redis.createClient(exports.REDIS_PORT, exports.REDIS_HOST)
 redisClient.auth(exports.REDIS_PASS)
+exports.redis = redisClient
 
 exports.debug = true
 

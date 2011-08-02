@@ -1,5 +1,5 @@
 (function() {
-  var add_member, gameChannel, membersOnlineCount, presenceChannel, remove_member, update_member_count;
+  var add_member, clearMoleAndBinding, gameChannel, membersOnlineCount, presenceChannel, remove_member, update_member_count;
   Pusher.log = function(message) {
     if (window.console && window.console.log) {
       return window.console.log(message);
@@ -59,4 +59,28 @@
       user_id: currentUserId
     });
   });
+  gameChannel.bind('new-game', function(data) {
+    $("#whack_mole").bind('click', function() {
+      gameChannel.trigger('client-whack', {
+        game_token: $(this).data('token'),
+        user_id: currentUserId
+      });
+      return clearMoleAndBinding();
+    });
+    $("#whack_mole").data('token', data.game_token).show();
+    return $(".message_area").html("Whack the mole!!");
+  });
+  gameChannel.bind('client-whack', function(data) {
+    if ($("#whack_mole").data('token') === data.game_token) {
+      return clearMoleAndBinding();
+    }
+  });
+  gameChannel.bind('game-over', function(data) {
+    clearMoleAndBinding();
+    $(".message_area").html("Game over! The winner was " + data.user_id);
+    return $("#start_game_button").show();
+  });
+  clearMoleAndBinding = function() {
+    return $("#whack_mole").data('token', null).unbind('click').hide();
+  };
 }).call(this);

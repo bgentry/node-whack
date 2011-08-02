@@ -52,3 +52,27 @@ gameChannel.bind 'client-new-game-requested', (data) ->
 $("#start_game_button").live 'click', () ->
   $(this).hide()
   gameChannel.trigger("client-new-game-requested", { user_id: currentUserId })
+
+gameChannel.bind 'new-game', (data) ->
+  $("#whack_mole").bind 'click', () ->
+    gameChannel.trigger('client-whack', {
+      game_token: $(this).data('token'),
+      user_id: currentUserId
+    })
+    clearMoleAndBinding()
+  $("#whack_mole").data('token', data.game_token).show()
+  $(".message_area").html("Whack the mole!!")
+
+gameChannel.bind 'client-whack', (data) ->
+  # Another user has whacked. Remove the mole if the token is correct
+  if $("#whack_mole").data('token') == data.game_token
+    clearMoleAndBinding()
+
+gameChannel.bind 'game-over', (data) ->
+  clearMoleAndBinding()
+  $(".message_area").html("Game over! The winner was #{data.user_id}")
+  $("#start_game_button").show()
+
+clearMoleAndBinding = () ->
+  # Remove the game token and click binding
+  $("#whack_mole").data('token', null).unbind('click').hide()
