@@ -17,7 +17,7 @@ gameChannel.bind 'client-whack', (data) ->
   if data.game_token?
     redisClient.get 'current_game_token', (err, reply) ->
       if data.game_token == reply
-        acquireLock 'whack-lock', () ->
+        simpleLock 'whack-lock', () ->
           redisClient.del('current_game_token')
           console.log "Winner! #{data.user_id}"
           redisClient.hincrby 'scoreboard', data.user_id, 1, (err, reply) ->
@@ -36,6 +36,16 @@ getUserScore = (user_email, callback) ->
   redisClient.hget 'scoreboard', user_email, (err, reply) ->
     callback(reply || 0)
 exports.getUserScore = getUserScore
+
+simpleLock = (lock_key, callback) ->
+  redisClient.setnx lock_key, 1, (err, setNxReply) ->
+    console.log "setNxReply:"
+    console.log setNxReply
+    if setNxReply == 1
+      callback()
+      redisClient.del lock_key
+    else
+      console.log "No lock acquired"
 
 acquireLock = (lock_key, callback, timeout = 500) ->
   now = Date.now()
