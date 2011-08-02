@@ -1,6 +1,6 @@
 module.exports = (app) ->
   crypto = require('crypto')
-  pusherClient = require('../pusher').Client
+  pusherClient = require('../settings').pusher.Client
 
   app.get '/', (req, res) ->
     if req.session.email

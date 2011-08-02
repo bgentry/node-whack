@@ -1,6 +1,8 @@
-pusher        = require('../pusher')
-pusherClient  = pusher.Client
-pusherApi     = pusher.Api
+rbytes        = require('rbytes')
+
+settings      = require('../settings')
+pusherClient  = settings.pusher.Client
+pusherApi     = settings.pusher.Api
 gameChannel   = pusherClient.subscribe('private-game')
 gameChannelApi = pusherApi.channel('private-game')
 
