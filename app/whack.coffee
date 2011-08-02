@@ -11,7 +11,7 @@ gameChannelApi = pusherApi.channel('private-game')
 gameChannel.bind 'client-new-game-requested', (data) ->
   console.log "New game starting!"
   gameChannelApi.trigger 'new-game-starting', {user_id: data.user_id}
-  setTimeout startGame, randomStartDelay(4, 4)
+  setTimeout startGame, randomStartDelay(4000, 4000)
 
 gameChannel.bind 'client-whack', (data) ->
   if data.game_token?
