@@ -78,7 +78,7 @@
   gameChannel.bind('game-over', function(data) {
     clearMoleAndBinding();
     $(".message_area").html("Game over! The winner was " + data.user_id);
-    $(".user[data-email=" + data.user_id + "] .score").html(data.score);
+    $(".user[data-email='" + data.user_id + "'] .score").html(data.score);
     return $("#start_game_button").show();
   });
   clearMoleAndBinding = function() {
