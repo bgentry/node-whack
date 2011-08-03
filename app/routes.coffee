@@ -7,11 +7,14 @@ module.exports = (app) ->
 
   app.get '/', (req, res) ->
     if req.session.email
-      res.render 'index', {
-        title: app.set('title'),
-        currentUserId: req.session.email,
-        pusherAppKey: app.set('pusherAppKey')
-      }
+      whack.getUserScores (scores) ->
+        res.render 'index', {
+          title: app.set('title'),
+          currentUserId: req.session.id,
+          currentUserEmail: req.session.email,
+          pusherAppKey: app.set('pusherAppKey'),
+          scores: scores
+        }
     else
       res.redirect '/join'
 
@@ -37,8 +40,7 @@ module.exports = (app) ->
           {
             user_id: req.session.id,
             user_info: {
-              email: req.session.email,
-              score: req.session.score
+              email: req.session.email
             }
           }
         ))

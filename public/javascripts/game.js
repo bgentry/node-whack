@@ -33,7 +33,7 @@
   });
   add_member = function(id, info) {
     return $('.user-list').fadeIn(function() {
-      return $(this).append("<ul class='user' data-email='" + info.email + "' data-id='" + id + "'><span class='score'>" + info.score + "</span><span class='email'>" + info.email + "</span></ul>");
+      return $(this).append("<ul class='user' data-email='" + info.email + "' data-id='" + id + "'><span class='score'>" + userScores[info.email] + "</span><span class='email'>" + info.email + "</span></ul>");
     });
   };
   remove_member = function(id, info) {
@@ -63,6 +63,7 @@
     $("#whack_mole").bind('click', function() {
       gameChannel.trigger('client-whack', {
         game_token: $(this).data('token'),
+        user_email: currentUserEmail,
         user_id: currentUserId
       });
       return clearMoleAndBinding();
@@ -77,8 +78,9 @@
   });
   gameChannel.bind('game-over', function(data) {
     clearMoleAndBinding();
-    $(".message_area").html("Game over! The winner was " + data.user_id);
-    $(".user[data-email='" + data.user_id + "'] .score").html(data.score);
+    $(".message_area").html("Game over! The winner was " + data.user_email);
+    userScores[data.user_email] = data.score;
+    $(".user[data-email='" + data.user_email + "'] .score").html(data.score);
     return $("#start_game_button").show();
   });
   clearMoleAndBinding = function() {

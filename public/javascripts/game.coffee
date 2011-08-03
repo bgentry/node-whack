@@ -29,7 +29,7 @@ presenceChannel.bind 'pusher:member_removed', (member) ->
 
 add_member = (id, info) ->
   $('.user-list').fadeIn () ->
-    $(this).append("<ul class='user' data-email='#{info.email}' data-id='#{id}'><span class='score'>#{info.score}</span><span class='email'>#{info.email}</span></ul>")
+    $(this).append("<ul class='user' data-email='#{info.email}' data-id='#{id}'><span class='score'>#{userScores[info.email]}</span><span class='email'>#{info.email}</span></ul>")
 
 remove_member = (id, info) ->
   $(".user[data-id='#{id}']").fadeOut () ->
@@ -57,6 +57,7 @@ gameChannel.bind 'new-game', (data) ->
   $("#whack_mole").bind 'click', () ->
     gameChannel.trigger('client-whack', {
       game_token: $(this).data('token'),
+      user_email: currentUserEmail,
       user_id: currentUserId
     })
     clearMoleAndBinding()
@@ -70,8 +71,9 @@ gameChannel.bind 'client-whack', (data) ->
 
 gameChannel.bind 'game-over', (data) ->
   clearMoleAndBinding()
-  $(".message_area").html("Game over! The winner was #{data.user_id}")
-  $(".user[data-email='#{data.user_id}'] .score").html(data.score)
+  $(".message_area").html("Game over! The winner was #{data.user_email}")
+  userScores[data.user_email] = data.score
+  $(".user[data-email='#{data.user_email}'] .score").html(data.score)
   $("#start_game_button").show()
 
 clearMoleAndBinding = () ->

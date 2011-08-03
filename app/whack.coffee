@@ -15,13 +15,13 @@ gameChannel.bind 'client-new-game-requested', (data) ->
 
 gameChannel.bind 'client-whack', (data) ->
   if data.game_token?
-    redisClient.get 'current_game_token', (err, reply) ->
-      if data.game_token == reply
+    redisClient.get 'current_game_token', (err, current_token) ->
+      if data.game_token == current_token
         simpleLock 'whack-lock', () ->
           redisClient.del('current_game_token')
-          console.log "Winner! #{data.user_id}"
-          redisClient.hincrby 'scoreboard', data.user_id, 1, (err, reply) ->
-            gameChannelApi.trigger 'game-over', {user_id: data.user_id, score: reply}
+          console.log "Winner! #{data.user_email}"
+          incrementUserScore data.user_email, (new_score) ->
+            gameChannelApi.trigger 'game-over', {user_email: data.user_email, score: new_score}
 
 startGame = () ->
   console.log "Starting Game"
@@ -32,10 +32,34 @@ startGame = () ->
 randomStartDelay = (minimum, spread) ->
   Math.random()*spread + minimum
 
+getUserScores = (callback) ->
+  redisClient.zrangebyscore 'scoreboard', 1, '+inf', 'WITHSCORES', (err, replies) ->
+    if err
+      console.log "Error in getUserScores: #{err}"
+      throw err
+    else
+      result = {}
+      current_user = null
+      replies.forEach (reply, i) ->
+        if i % 2
+          result[current_user] = reply
+        else
+          current_user = reply
+      callback(result)
+exports.getUserScores = getUserScores
+
 getUserScore = (user_email, callback) ->
-  redisClient.hget 'scoreboard', user_email, (err, reply) ->
-    callback(reply || 0)
+  redisClient.zscore 'scoreboard', user_email, (err, reply) ->
+    if err
+      console.log "Error in getUserScore: #{err}"
+      throw err
+    else
+      callback(reply || 0)
 exports.getUserScore = getUserScore
+
+incrementUserScore = (user_email, callback, amount = 1) ->
+  redisClient.zincrby 'scoreboard', amount, user_email, (err, reply) ->
+    callback(reply)
 
 simpleLock = (lock_key, callback) ->
   redisClient.setnx lock_key, 1, (err, setNxReply) ->
