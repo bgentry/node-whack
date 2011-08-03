@@ -8,6 +8,10 @@ pusherApi     = settings.pusher.Api
 gameChannel   = pusherClient.subscribe('private-game')
 gameChannelApi = pusherApi.channel('private-game')
 
+GAME_BOARD_WIDTH = 800
+GAME_BOARD_HEIGHT = 600
+MOLE_SIZE = 100
+
 gameChannel.bind 'client-new-game-requested', (data) ->
   console.log "New game starting!"
   gameChannelApi.trigger 'new-game-starting', {user_id: data.user_id}
@@ -25,9 +29,13 @@ gameChannel.bind 'client-whack', (data) ->
 
 startGame = () ->
   console.log "Starting Game"
+  # Generate game token
   game_token = rbytes.randomBytes(32).toHex()
+  # Generate coordinates
+  x = Math.floor(Math.random() * (GAME_BOARD_WIDTH - (MOLE_SIZE / 2)))
+  y = Math.floor(Math.random() * (GAME_BOARD_HEIGHT - (MOLE_SIZE / 2)))
   redisClient.setex('current_game_token', 20, game_token, redis.print)
-  gameChannelApi.trigger 'new-game', {game_token: game_token}
+  gameChannelApi.trigger 'new-game', {game_token: game_token, position: {x: x, y: y}}
 
 randomStartDelay = (minimum, spread) ->
   Math.random()*spread + minimum
