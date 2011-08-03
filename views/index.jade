@@ -5,16 +5,16 @@ html
     script(src='http://js.pusherapp.com/1.8/pusher.min.js')
   body
     h1= title
-    p.message_area
+    p.messageArea
     div.user-area
       h2 Users Online
         span.user-count ()
       ol.user-list
 
     div.game-board
+      button#start-game-button(type="button") Start Game
       img#mole(src="images/evil_mole_cropped.png")
 
-    button#start_game_button(type="button") Start Game
     script(type='text/javascript')
       var pusher = new Pusher('#{pusherAppKey}');
       var currentUserId = "#{currentUserId}";

@@ -47,13 +47,13 @@
     });
   };
   gameChannel.bind('new-game-starting', function(data) {
-    $("#start_game_button").hide();
-    return $(".message_area").html("A new game is starting soon. Get ready!");
+    $("#start-game-button").hide();
+    return $(".messageArea").html("A new game is starting soon. Get ready!");
   });
   gameChannel.bind('client-new-game-requested', function(data) {
-    return $("#start_game_button").hide();
+    return $("#start-game-button").hide();
   });
-  $("#start_game_button").live('click', function() {
+  $("#start-game-button").live('click', function() {
     $(this).hide();
     return gameChannel.trigger("client-new-game-requested", {
       user_id: currentUserId
@@ -69,7 +69,7 @@
       return clearMoleAndBinding();
     });
     $("#mole").css('bottom', data.position.y).css('left', data.position.x).data('token', data.game_token).slideDown('fast');
-    return $(".message_area").html("Whack the mole!!");
+    return $(".messageArea").html("Whack the mole!!");
   });
   gameChannel.bind('client-whack', function(data) {
     if ($("#mole").data('token') === data.game_token) {
@@ -81,7 +81,7 @@
     $(".message_area").html("Game over! The winner was " + data.user_email);
     userScores[data.user_email] = data.score;
     $(".user[data-email='" + data.user_email + "'] .score").html(data.score);
-    return $("#start_game_button").show();
+    return $("#start-game-button").show();
   });
   clearMoleAndBinding = function() {
     return $("#mole").unbind('click').slideUp('fast');

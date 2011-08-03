@@ -41,15 +41,15 @@ update_member_count = () ->
 
 # Game events
 gameChannel.bind 'new-game-starting', (data) ->
-  $("#start_game_button").hide()
-  $(".message_area").html("A new game is starting soon. Get ready!")
+  $("#start-game-button").hide()
+  $(".messageArea").html("A new game is starting soon. Get ready!")
 
 gameChannel.bind 'client-new-game-requested', (data) ->
   # Hiding on the client event gets a faster response than waiting for the
   # server to notify us of an impending game
-  $("#start_game_button").hide()
+  $("#start-game-button").hide()
 
-$("#start_game_button").live 'click', () ->
+$("#start-game-button").live 'click', () ->
   $(this).hide()
   gameChannel.trigger("client-new-game-requested", { user_id: currentUserId })
 
@@ -62,7 +62,7 @@ gameChannel.bind 'new-game', (data) ->
     }
     clearMoleAndBinding()
   $("#mole").css('bottom', data.position.y).css('left', data.position.x).data('token', data.game_token).slideDown('fast')
-  $(".message_area").html("Whack the mole!!")
+  $(".messageArea").html("Whack the mole!!")
 
 gameChannel.bind 'client-whack', (data) ->
   # Another user has whacked. Remove the mole if the token is correct
@@ -74,7 +74,7 @@ gameChannel.bind 'game-over', (data) ->
   $(".message_area").html("Game over! The winner was #{data.user_email}")
   userScores[data.user_email] = data.score
   $(".user[data-email='#{data.user_email}'] .score").html(data.score)
-  $("#start_game_button").show()
+  $("#start-game-button").show()
 
 clearMoleAndBinding = () ->
   # Remove the game token and click binding
