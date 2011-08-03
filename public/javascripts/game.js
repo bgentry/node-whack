@@ -68,10 +68,7 @@
       });
       return clearMoleAndBinding();
     });
-    $("#mole").offset({
-      top: data.position.y,
-      left: data.position.x
-    }).data('token', data.game_token).show();
+    $("#mole").css('top', data.position.y).css('left', data.position.x).data('token', data.game_token).show();
     return $(".message_area").html("Whack the mole!!");
   });
   gameChannel.bind('client-whack', function(data) {
