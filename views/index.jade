@@ -6,9 +6,12 @@ html
   body
     h1= title
     p.message_area
-    h2 Users Online
-      span.user-count ()
-    ol.user-list
+    div.user-area
+      h2 Users Online
+        span.user-count ()
+      ol.user-list
+
+    canvas.game-board
 
     button#whack_mole(type="button", style="display:none;") Whack!
     button#start_game_button(type="button") Start Game
