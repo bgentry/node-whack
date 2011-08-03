@@ -29,7 +29,7 @@ presenceChannel.bind 'pusher:member_removed', (member) ->
 
 add_member = (id, info) ->
   $('.user-list').fadeIn () ->
-    $(this).append("<ul class='user' data-email='#{info.email}' data-id='#{id}'><span class='score'>#{userScores[info.email]}</span><span class='email'>#{info.email}</span></ul>")
+    $(this).append("<ul class='user' data-email='#{info.email}' data-id='#{id}'><span class='score'>#{userScores[info.email] || 0}</span><span class='email'>#{info.email}</span></ul>")
 
 remove_member = (id, info) ->
   $(".user[data-id='#{id}']").fadeOut () ->

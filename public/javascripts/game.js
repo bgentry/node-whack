@@ -33,7 +33,7 @@
   });
   add_member = function(id, info) {
     return $('.user-list').fadeIn(function() {
-      return $(this).append("<ul class='user' data-email='" + info.email + "' data-id='" + id + "'><span class='score'>" + userScores[info.email] + "</span><span class='email'>" + info.email + "</span></ul>");
+      return $(this).append("<ul class='user' data-email='" + info.email + "' data-id='" + id + "'><span class='score'>" + (userScores[info.email] || 0) + "</span><span class='email'>" + info.email + "</span></ul>");
     });
   };
   remove_member = function(id, info) {
