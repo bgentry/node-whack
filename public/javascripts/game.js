@@ -68,7 +68,7 @@
       });
       return clearMoleAndBinding();
     });
-    $("#mole").css('top', data.position.y).css('left', data.position.x).data('token', data.game_token).show();
+    $("#mole").css('bottom', data.position.y).css('left', data.position.x).data('token', data.game_token).slideDown('fast');
     return $(".message_area").html("Whack the mole!!");
   });
   gameChannel.bind('client-whack', function(data) {
@@ -84,6 +84,6 @@
     return $("#start_game_button").show();
   });
   clearMoleAndBinding = function() {
-    return $("#mole").unbind('click').hide();
+    return $("#mole").unbind('click').slideUp('fast');
   };
 }).call(this);

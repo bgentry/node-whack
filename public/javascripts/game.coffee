@@ -61,7 +61,7 @@ gameChannel.bind 'new-game', (data) ->
       user_id: currentUserId
     }
     clearMoleAndBinding()
-  $("#mole").css('top', data.position.y).css('left', data.position.x).data('token', data.game_token).show()
+  $("#mole").css('bottom', data.position.y).css('left', data.position.x).data('token', data.game_token).slideDown('fast')
   $(".message_area").html("Whack the mole!!")
 
 gameChannel.bind 'client-whack', (data) ->
@@ -78,4 +78,4 @@ gameChannel.bind 'game-over', (data) ->
 
 clearMoleAndBinding = () ->
   # Remove the game token and click binding
-  $("#mole").unbind('click').hide()
+  $("#mole").unbind('click').slideUp('fast')
