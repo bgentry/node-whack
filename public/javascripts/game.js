@@ -84,6 +84,6 @@
     return $("#start-game-button").show();
   });
   clearMoleAndBinding = function() {
-    return $("#mole").unbind('click').slideUp('fast');
+    return $("#mole").unbind('click').slideUp(100);
   };
 }).call(this);

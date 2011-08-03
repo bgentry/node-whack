@@ -78,4 +78,4 @@ gameChannel.bind 'game-over', (data) ->
 
 clearMoleAndBinding = () ->
   # Remove the game token and click binding
-  $("#mole").unbind('click').slideUp('fast')
+  $("#mole").unbind('click').slideUp(100)
