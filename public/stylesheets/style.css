@@ -21,4 +21,11 @@ a {
   display: block;
   height: 600px;
   width: 800px;
-  border: 1px dashed black; }
+  border: 1px dashed black;
+  position: relative; }
+
+#mole {
+  display: none;
+  height: 100px;
+  width: 100px;
+  position: absolute; }

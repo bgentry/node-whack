@@ -11,9 +11,9 @@ html
         span.user-count ()
       ol.user-list
 
-    canvas.game-board
+    div.game-board
+      img#mole(src="images/evil_mole_cropped.png")
 
-    button#whack_mole(type="button", style="display:none;") Whack!
     button#start_game_button(type="button") Start Game
     script(type='text/javascript')
       var pusher = new Pusher('#{pusherAppKey}');

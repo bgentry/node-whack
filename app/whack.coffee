@@ -32,8 +32,8 @@ startGame = () ->
   # Generate game token
   game_token = rbytes.randomBytes(32).toHex()
   # Generate coordinates
-  x = Math.floor(Math.random() * (GAME_BOARD_WIDTH - (MOLE_SIZE / 2)))
-  y = Math.floor(Math.random() * (GAME_BOARD_HEIGHT - (MOLE_SIZE / 2)))
+  x = Math.floor(Math.random() * (GAME_BOARD_WIDTH - MOLE_SIZE))
+  y = Math.floor(Math.random() * (GAME_BOARD_HEIGHT - MOLE_SIZE))
   redisClient.setex('current_game_token', 20, game_token, redis.print)
   gameChannelApi.trigger 'new-game', {game_token: game_token, position: {x: x, y: y}}
 

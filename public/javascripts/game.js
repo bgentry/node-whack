@@ -60,7 +60,7 @@
     });
   });
   gameChannel.bind('new-game', function(data) {
-    $("#whack_mole").bind('click', function() {
+    $("#mole").bind('click', function() {
       gameChannel.trigger('client-whack', {
         game_token: $(this).data('token'),
         user_email: currentUserEmail,
@@ -68,11 +68,14 @@
       });
       return clearMoleAndBinding();
     });
-    $("#whack_mole").data('token', data.game_token).show();
+    $("#mole").offset({
+      top: data.position.y,
+      left: data.position.x
+    }).data('token', data.game_token).show();
     return $(".message_area").html("Whack the mole!!");
   });
   gameChannel.bind('client-whack', function(data) {
-    if ($("#whack_mole").data('token') === data.game_token) {
+    if ($("#mole").data('token') === data.game_token) {
       return clearMoleAndBinding();
     }
   });
@@ -84,6 +87,6 @@
     return $("#start_game_button").show();
   });
   clearMoleAndBinding = function() {
-    return $("#whack_mole").data('token', null).unbind('click').hide();
+    return $("#mole").unbind('click').hide();
   };
 }).call(this);
