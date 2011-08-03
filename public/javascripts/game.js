@@ -78,7 +78,7 @@
   });
   gameChannel.bind('game-over', function(data) {
     clearMoleAndBinding();
-    $(".message_area").html("Game over! The winner was " + data.user_email);
+    $(".messageArea").html("Game over! The winner was " + data.user_email);
     userScores[data.user_email] = data.score;
     $(".user[data-email='" + data.user_email + "'] .score").html(data.score);
     return $("#start-game-button").show();

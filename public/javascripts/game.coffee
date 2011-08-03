@@ -71,7 +71,7 @@ gameChannel.bind 'client-whack', (data) ->
 
 gameChannel.bind 'game-over', (data) ->
   clearMoleAndBinding()
-  $(".message_area").html("Game over! The winner was #{data.user_email}")
+  $(".messageArea").html("Game over! The winner was #{data.user_email}")
   userScores[data.user_email] = data.score
   $(".user[data-email='#{data.user_email}'] .score").html(data.score)
   $("#start-game-button").show()
