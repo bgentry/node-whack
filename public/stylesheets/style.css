@@ -93,13 +93,15 @@ h1 {
     margin-left: 6px; }
 
 .user-list {
-  padding: 0; }
+  padding: 0;
+  list-style: none; }
 
 .user {
   margin: 10px 0;
   padding: 4px 0; }
   .user .score {
-    margin-right: 10px; }
+    margin-right: 10px;
+    width: 15px; }
 
 .game-board {
   display: block;
