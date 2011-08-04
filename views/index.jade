@@ -21,6 +21,6 @@ html
       script(type='text/javascript')
         var pusher = new Pusher('#{pusherAppKey}');
         var currentUserId = "#{currentUserId}";
-        var currentUserEmail = "#{currentUserEmail}";
+        var currentUserNickname = "#{currentUserNickname}";
         var userScores = !{JSON.stringify(scores)}
       script(src='/javascripts/game.js')

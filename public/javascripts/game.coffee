@@ -29,7 +29,8 @@ presenceChannel.bind 'pusher:member_removed', (member) ->
 
 add_member = (id, info) ->
   $('.user-list').fadeIn () ->
-    $(this).append("<li class='user' data-email='#{info.email}' data-id='#{id}'><span class='score'>#{userScores[info.email] || 0}</span><span class='email'>#{info.email}</span></li>")
+    displayName = if (info.nickname.length > 20) then "#{info.nickname.substring(0,17)}..." else info.nickname
+    $(this).append("<li class='user' data-nickname='#{info.nickname}' data-id='#{id}'><span class='score'>#{userScores[info.nickname] || 0}</span><span class='nickname'>#{displayName}</span></li>")
 
 remove_member = (id, info) ->
   $(".user[data-id='#{id}']").fadeOut () ->
@@ -57,7 +58,7 @@ gameChannel.bind 'new-game', (data) ->
   $("#mole").bind 'click', () ->
     gameChannel.trigger 'client-whack', {
       game_token: $(this).data('token'),
-      user_email: currentUserEmail,
+      user_nickname: currentUserNickname,
       user_id: currentUserId
     }
     clearMoleAndBinding()
@@ -71,9 +72,9 @@ gameChannel.bind 'client-whack', (data) ->
 
 gameChannel.bind 'game-over', (data) ->
   clearMoleAndBinding()
-  $(".messageArea").html("Game over! The winner was #{data.user_email}")
-  userScores[data.user_email] = data.score
-  $(".user[data-email='#{data.user_email}'] .score").html(data.score)
+  $(".messageArea").html("Game over! The winner was #{data.user_nickname}")
+  userScores[data.user_nickname] = data.score
+  $(".user[data-nickname='#{data.user_nickname}'] .score").html(data.score)
   $("#start-game-button").show()
 
 clearMoleAndBinding = () ->

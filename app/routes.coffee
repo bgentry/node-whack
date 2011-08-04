@@ -6,12 +6,12 @@ module.exports = (app) ->
   whack = require('./whack')
 
   app.get '/', (req, res) ->
-    if req.session.email
+    if req.session.nickname
       whack.getUserScores (scores) ->
         res.render 'index', {
           title: app.set('title'),
           currentUserId: req.session.id,
-          currentUserEmail: req.session.email,
+          currentUserNickname: req.session.nickname,
           pusherAppKey: app.set('pusherAppKey'),
           scores: scores
         }
@@ -24,12 +24,12 @@ module.exports = (app) ->
     }
 
   app.post '/join', (req, res) ->
-    req.session.email = escape(req.body.user.email)
+    req.session.nickname = escape(req.body.user.nickname)
     refreshUserScore req, () ->
       res.redirect '/'
 
   app.post '/pusher/auth', (req, res) ->
-    res.redirect '/join' unless req.session.email
+    res.redirect '/join' unless req.session.nickname
     if req.body.channel_name == 'presence-game' || req.body.channel_name == 'private-game'
       refreshUserScore req, () ->
         req.setEncoding('utf8')
@@ -40,7 +40,7 @@ module.exports = (app) ->
           {
             user_id: req.session.id,
             user_info: {
-              email: req.session.email
+              nickname: req.session.nickname
             }
           }
         ))
@@ -53,6 +53,6 @@ module.exports = (app) ->
     else res.send 403
 
   refreshUserScore = (req, callback) ->
-    whack.getUserScore req.session.email, (score) ->
+    whack.getUserScore req.session.nickname, (score) ->
       req.session.score = score
       callback()

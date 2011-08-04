@@ -23,9 +23,9 @@ gameChannel.bind 'client-whack', (data) ->
       if data.game_token == current_token
         simpleLock 'whack-lock', () ->
           redisClient.del('current_game_token')
-          console.log "Winner! #{data.user_email}"
-          incrementUserScore data.user_email, (new_score) ->
-            gameChannelApi.trigger 'game-over', {user_email: data.user_email, score: new_score}
+          console.log "Winner! #{data.user_nickname}"
+          incrementUserScore data.user_nickname, (new_score) ->
+            gameChannelApi.trigger 'game-over', {user_nickname: data.user_nickname, score: new_score}
 
 startGame = () ->
   console.log "Starting Game"
@@ -56,8 +56,8 @@ getUserScores = (callback) ->
       callback(result)
 exports.getUserScores = getUserScores
 
-getUserScore = (user_email, callback) ->
-  redisClient.zscore 'scoreboard', user_email, (err, reply) ->
+getUserScore = (user_nickname, callback) ->
+  redisClient.zscore 'scoreboard', user_nickname, (err, reply) ->
     if err
       console.log "Error in getUserScore: #{err}"
       throw err
@@ -65,8 +65,8 @@ getUserScore = (user_email, callback) ->
       callback(reply || 0)
 exports.getUserScore = getUserScore
 
-incrementUserScore = (user_email, callback, amount = 1) ->
-  redisClient.zincrby 'scoreboard', amount, user_email, (err, reply) ->
+incrementUserScore = (user_nickname, callback, amount = 1) ->
+  redisClient.zincrby 'scoreboard', amount, user_nickname, (err, reply) ->
     callback(reply)
 
 simpleLock = (lock_key, callback) ->
