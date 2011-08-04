@@ -24,7 +24,7 @@ module.exports = (app) ->
     }
 
   app.post '/join', (req, res) ->
-    req.session.email = req.body.user.email
+    req.session.email = escape(req.body.user.email)
     refreshUserScore req, () ->
       res.redirect '/'
 
