@@ -1,5 +1,5 @@
 (function() {
-  var add_member, clearMoleAndBinding, gameChannel, membersOnlineCount, presenceChannel, remove_member, update_member_count;
+  var add_member, clearMoleAndBinding, gameChannel, membersOnlineCount, presenceChannel, remove_member, showMessageAndAnimate, update_member_count;
   Pusher.log = function(message) {
     if (window.console && window.console.log) {
       return window.console.log(message);
@@ -50,7 +50,7 @@
   };
   gameChannel.bind('new-game-starting', function(data) {
     $("#start-game-button").hide();
-    return $(".messageArea").html("A new game is starting soon. Get ready!");
+    return showMessageAndAnimate("A new game is starting soon. Get ready!");
   });
   gameChannel.bind('client-new-game-requested', function(data) {
     return $("#start-game-button").hide();
@@ -71,7 +71,7 @@
       return clearMoleAndBinding();
     });
     $("#mole").css('bottom', data.position.y).css('left', data.position.x).data('token', data.game_token).slideDown('fast');
-    return $(".messageArea").html("Whack the mole!!");
+    return showMessageAndAnimate("Whack the mole!!");
   });
   gameChannel.bind('client-whack', function(data) {
     if ($("#mole").data('token') === data.game_token) {
@@ -80,12 +80,15 @@
   });
   gameChannel.bind('game-over', function(data) {
     clearMoleAndBinding();
-    $(".messageArea").html("Game over! The winner was " + data.user_nickname);
+    showMessageAndAnimate("Game over! The winner was " + data.user_nickname);
     userScores[data.user_nickname] = data.score;
     $(".user[data-nickname='" + data.user_nickname + "'] .score").html(data.score);
     return $("#start-game-button").show();
   });
   clearMoleAndBinding = function() {
     return $("#mole").unbind('click').slideUp(100);
+  };
+  showMessageAndAnimate = function(text) {
+    return $(".messageArea").html(text).effect("highlight", {}, 1000);
   };
 }).call(this);
